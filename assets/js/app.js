@@ -375,4 +375,37 @@
       console.warn('Restore failed:', e);
     }
   })();
+
+  // ===== Background Video Lazy Load (4K Optimized) =====
+(function initBackgroundVideo(){
+  const video = document.querySelector('.bg-video')
+  if (!video) return
+
+  // tampilkan poster dulu, jangan load video
+  let loaded = false
+
+  function loadVideo(){
+    if (loaded) return
+    loaded = true
+
+    // inject source (baru mulai download di sini)
+    video.innerHTML = `
+      <source src="assets/videos/HATSUNE MIKU 4K.webm" type="video/webm">
+    `
+
+    video.load()
+
+    // coba autoplay (akan berhasil karena muted)
+    video.play().catch(() => {})
+  }
+
+  // ✅ Strategi 1: tunggu UI siap dulu
+  window.addEventListener('load', () => {
+    setTimeout(loadVideo, 1200) // delay biar UI & font render dulu
+  })
+
+  // ✅ Strategi 2: fallback kalau user interaksi lebih cepat
+  document.addEventListener('click', loadVideo, { once: true })
+  document.addEventListener('scroll', loadVideo, { once: true })
+})()
 })();
